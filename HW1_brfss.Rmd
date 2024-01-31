@@ -1,0 +1,49 @@
+---
+title: "HW1_brfss"
+author: "Allegra Durante"
+date: "2024-01-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Homework 1, Jan 31 2024
+
+```{r}
+load("~/CCNY 2024/2023-2024/PSY V0500 Stats/Statting/BRFSS2022/BRFSS2022_rev.RData")
+```
+```{r}
+## glimpse(brfss22)
+brfss22[1:10, 1:6]
+```
+Getting into sleep time.
+```{r}
+sleptim1 <- c(brfss22$SLEPTIM1)
+## summary(sleptim1)
+## summary(sleptim1[X_STATE=="New York"])
+```
+
+```{r}
+## summary(brfss22$SLEPTIM1[X_STATE == "New York"])
+```
+```{r}
+summary(brfss22$X_STATE)
+```
+```{r}
+summary(brfss22$SLEPTIM1[brfss22$X_STATE == "New York"])
+```
+```{r}
+summary(brfss22$SLEPTIM1[brfss22$X_STATE == "Ohio"])
+```
+```{r}
+mean(brfss22$SLEPTIM1[brfss22$X_STATE == "New York"], na.rm = TRUE)
+sd(brfss22$SLEPTIM1[brfss22$X_STATE == "New York"], na.rm = TRUE)
+mean(brfss22$SLEPTIM1[brfss22$X_STATE == "Ohio"], na.rm = TRUE)
+sd(brfss22$SLEPTIM1[brfss22$X_STATE == "Ohio"], na.rm = TRUE)
+```
+
+
+
+
