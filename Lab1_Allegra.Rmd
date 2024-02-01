@@ -1,0 +1,90 @@
+---
+title: "Is this a markdown"
+author: "Allegra Durante"
+date: "2024-02-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+## xtabs(~ brfss22$ADDEPEV3 + brfss22$SEXVAR)
+## prop.table(table(brfss22$ADDEPEV3, brfss22$SEXVAR))
+## NN <- length(brfss22$ADDEPEV3)
+## set.seed(12345)
+## restrict_1 <- (runif(NN) < 0.1)
+## summary(restrict_1)
+```
+```{r}
+## brfss_small <- subset(brfss22, restrict_1)
+
+```
+
+```{r}
+library(tidyverse)
+```
+```{r}
+brfss_small_m <- subset(brfss_small,brfss_small$SEXVAR == "Male")
+brfss_small_f <- subset(brfss_small,brfss_small$SEXVAR == "Female")
+
+ggplot(brfss_small, aes(x=SEXVAR, fill=ADDEPEV3)) + geom_bar()
+```
+```{r}
+summary(brfss22$SOMALE)
+summary(brfss22$SOFEMALE)
+summary(brfss22$TRNSGNDR, na.rm = TRUE)
+```
+```{r}
+brfss_small_somale_g <- subset(brfss_small,brfss_small$SOMALE == "Gay")
+brfss_small_somale_s <- subset(brfss_small,brfss_small$SOMALE == "Straight, that is, not gay")
+brfss_small_somale_b <- subset(brfss_small,brfss_small$SOMALE == "Bisexual")
+summary(brfss_small_somale_g$ADDEPEV3)
+summary(brfss_small_somale_s$ADDEPEV3)
+summary(brfss_small_somale_b$ADDEPEV3)
+```
+```{r}
+brfss_small_sofemale_g <- subset(brfss_small,brfss_small$SOFEMALE == "Lesbian")
+brfss_small_sofemale_s <- subset(brfss_small,brfss_small$SOFEMALE == "Straight, that is, not gay")
+brfss_small_sofemale_b <- subset(brfss_small,brfss_small$SOFEMALE == "Bisexual")
+summary(brfss_small_sofemale_g$ADDEPEV3)
+summary(brfss_small_sofemale_s$ADDEPEV3)
+summary(brfss_small_sofemale_b$ADDEPEV3)
+```
+```{r}
+ggplot(brfss_small, aes(x = SOMALE, fill=ADDEPEV3)) + geom_bar()
+
+```
+
+Swapping focus to income
+```{r}
+summary(brfss_small$INCOME3)
+ggplot(brfss_small, aes(x=INCOME3, fill=ADDEPEV3)) + geom_bar()
+ggplot(brfss_small, aes(x=ADDEPEV3, fill=INCOME3)) + geom_bar()
+```
+```{r}
+ggplot(brfss_small, aes(x=INCOME3, fill=ADDEPEV3)) + geom_bar(position="fill") + scale_fill_viridis_d(option = "rocket")
+```
+
+
