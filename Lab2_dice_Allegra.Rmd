@@ -1,0 +1,27 @@
+---
+title: "Lab 2 dice"
+author: "Allegra Durante"
+date: "2024-02-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Messed-up Dice Probability Protocols
+
+##PP1: Within 20 rolls, given that each die has 6 sides, a fairly weighted die should land on each number between 3 and 4 times. If one of the two dice lands on any number fewer than between 3-4 times, it can be assumed that die is unfair.
+
+##PP2: If either of the two dice lands on 6 more than 3-4 times, it can be assumed that die may be unfair and "biased" towards rolling a six.
+
+##PP3: It is difficult to weight a die to favor a specific number, but is simpler to alter a die to make it less likely to roll a specific number. I.e., by rounding off the corners and edges surrounding the 6, it becomes less likely that the die will ever land with the 6 on the bottom, making it just as unlikely that a 1 (the number opposite a 6 on the die) will ever be rolled. If the die is successfully altered to not roll 1s as often (if ever), then the average roll on that die should be higher than 3.5 (the average of a fair die).
+
+
+```{r}
+ldie<-c(2,3,5,6,3,1,4,6,1,3,1,5,5,3,4,3,5,2,5,2)
+rdie<-c(3,3,1,3,3,2,5,4,3,4,1,5,5,4,3,1,3,6,2,1)
+```
+
+
+
