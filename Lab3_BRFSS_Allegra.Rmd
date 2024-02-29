@@ -1,0 +1,184 @@
+---
+title: "Lab 3"
+author: "Allegra Durante"
+date: "2024-02-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lab 3
+Rosie
+
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(ggplot2)
+library (tidyverse)
+```
+```{r}
+brfss22$Age_midpt <- fct_recode(brfss22$X_AGEG5YR, "21" = "Age 18 to 24", "27" = "Age 25 to 29", "32" = "Age 30 to 34", "37" = "Age 35 to 39", "42" = "Age 40 to 44", "47" = "Age 45 to 49", "52" = "Age 50 to 54", "57" = "Age 55 to 59", "62" = "Age 60 to 64", "67" = "Age 65 to 69", "72" = "Age 70 to 74", "77" = "Age 75 to 79", "82" = "Age 80 or older", NULL = "Don't know/Refused/Missing")
+
+brfss22$Age_midpt <- as.numeric(levels(brfss22$Age_midpt))[brfss22$Age_midpt]
+```
+
+```{r}
+select_tristate <- (brfss22$X_STATE == "New York") | (brfss22$X_STATE == "New Jersey") | (brfss22$X_STATE == "Connecticut")
+brfss_tristate <- subset(brfss22,select_tristate)
+```
+
+```{r}
+p_tri <- ggplot(data = brfss_tristate,
+                mapping = aes(x = Age_midpt, 
+                              y = X_BMI5))
+p_tri + geom_smooth()
+
+```
+
+```{r}
+p_tri + geom_jitter(width = 2.5, height = NULL, alpha = 0.05)
+
+```
+
+```{r}
+p_tri <- ggplot(data = brfss_tristate,
+                mapping = aes(x = Age_midpt,
+                              y = X_BMI5,
+                              color = X_STATE,
+                              fill = X_STATE))
+p_tri + geom_smooth()
+```
+
+```{r}
+ACEdidntask <- (as.numeric(is.na(brfss22$ACEDEPRS)) + 
+                        as.numeric(is.na(brfss22$ACEDRINK)) +
+                        as.numeric(is.na(brfss22$ACEDRUGS)) +
+                        as.numeric(is.na(brfss22$ACEPRISN)) +
+                        as.numeric(is.na(brfss22$ACEDIVRC)) +
+                        as.numeric(is.na(brfss22$ACEPUNCH)) +
+                        as.numeric(is.na(brfss22$ACEHURT1)) +
+                        as.numeric(is.na(brfss22$ACESWEAR)) +
+                        as.numeric(is.na(brfss22$ACETOUCH)) )
+select_ACE <- (ACEdidntask == 0) # with zero missing values for any of ACE questions
+brfss_ACE <- subset(brfss22, select_ACE)
+```
+
+```{r}
+xtabs(~ brfss_ACE$ACEDRINK + brfss_ACE$ACEDRUGS)
+```
+
+```{r}
+ftable(xtabs(~ brfss_ACE$ACEDRINK + brfss_ACE$ACEDRUGS))
+```
+
+```{r}
+brfss_ACE$ACEDRINK_recode <- fct_recode(brfss_ACE$ACEDRINK,
+                                         "Yes" = "Yes, Adverse Childhood Exper, lived with someone who was a problem drinker or alcoholic",
+                                "No" = "No", 
+                                "Not sure" = "dont know not sure",
+                                "Refused" = "refused")
+summary(brfss_ACE$ACEDRINK_recode)
+```
+```{r}
+summary(brfss22$ACEDRUGS)
+```
+
+
+
+```{r}
+brfss_ACE$ACEDRUGS_recode <- fct_recode(brfss_ACE$ACEDRUGS,
+                                         "Yes" = "Yes, Adverse Childhood Exper, lived with someone who used illegal street drugs or who abused prescription medications",
+                                "No" = "No", 
+                                "Not sure" = "dont know not sure",
+                                "Refused" = "refused")
+summary(brfss_ACE$ACEDRUGS_recode)
+```
+```{r}
+p_acesubst <- ggplot(data = brfss_ACE,
+                     mapping = aes(x = brfss_ACE$ACEDRINK_recode,
+                                   y = brfss_ACE$ACEDRUGS_recode))
+p_acesubst + geom_point()
+
+##To be honest I'm not totally sure what I was expecting to see in this plot. I'm going to look into the appendix of Lab 3 and recode some more ACE data and then try another graph.
+```
+
+
+```{r}
+summary(ACEdidntask)
+quantile(ACEdidntask, probs = c(0.01,0.05,0.1,0.15,0.2))
+
+## There are 9 different subsets of the ACE survey (drinks, drugs, depression, etc.). The ACEdidntask value set has been coded numerically so that a response of NA = yes is a 1, and a NA = no is a 0. If the subject responded NA to none of the ACE questions (meaning they answered all of them), they would have a value of 0 for ACEdidntask. If the subject responded NA to all 9 questions, they would have a value of 9 for ACEdidntask.
+```
+```{r}
+##Therefore, from the above output, we can conclude that between 10 and 15% of respondents answered all 9 questions in the ACE set. So let's narrow that down further, for fun.
+
+quantile(ACEdidntask, probs = c(0.1,0.11,0.12,0.13,0.14,0.15))
+```
+
+```{r}
+##One more, for luck:
+
+quantile(ACEdidntask, probs = c(0.101,0.102,0.103,0.104,0.105,0.106,0.107,0.108,0.109,0.11))
+
+##Interestingly, this breakdown shows that while a vast majority of people were asked either all 9 ACE questions or none of the ACE questions, a few respondents were asked between 9 and 0 of the ACE questions.
+```
+
+```{r}
+summary(brfss22$ACEPRISN)
+
+brfss_ACE$ACEPRISN_recode <- fct_recode(brfss_ACE$ACEPRISN,
+                                         "Yes" = "Yes, Adverse Childhood Exper, lived with someone who served time or was sentenced to serve time in a prison, jail, or other correctional facility",
+                                "No" = "No", 
+                                "Not sure" = "dont know not sure",
+                                "Refused" = "refused")
+summary(brfss_ACE$ACEPRISN_recode)
+```
+
+```{r}
+summary(brfss_ACE$ACEDRINK_recode)
+summary(brfss_ACE$ACEDRUGS_recode)
+summary(brfss_ACE$ACEPRISN_recode)
+```
+##ACEDRINK total: 47972, % yes = 23.91
+##ACEDRUGS total: 47972, % yes = 9.72
+##ACEPRISN total: 47972, % yes = 7.35
+
+Ideas to consider testing:
+What is the most common kind of ACE?
+How much greater, proportionately, is that ACE to the other ACEs?
+
+Note that the xtabs command (search Lab3 for code bits) will do cross tabs of the two variables: one set will be X and one will be Y, and you read it like a table
+
+```{r}
+xtabs(~ brfss_ACE$ACEDRINK_recode + brfss_ACE$ACEDRUGS_recode)
+ftable(xtabs(~ brfss_ACE$ACEDRINK_recode + brfss_ACE$ACEDRUGS_recode))
+```
+## Use those tables to calculate the marginal & conditional probabilities (see lectures week 3). Then do a hypothesis test to see if those probabilities are the same (spoiler: they aren't). Example, 3/11 and 8/11 vs 1.5/35.5 and 34/35.5 , horizontal marginals. Also try vertical.
+
+## For HW, try re-recoding so that DKNS and refused become yes or no, see if that affects the stats significantly. Note that some ACE questions might have more complex answers, like SWEAR: never vs once vs more than once. Realize that simplifying will make the tables simpler.
+
+## Test likelihoods such as ACE + depression diagnosis
+
+```{r}
+brfss_ACE$ACEmultiple <- (as.numeric(brfss_ACE$ACEDRINK_recode == "Yes") + 
+                  )
+
+summary(brfss_ACE$ACEmultiple)
+
+## This will tell you how many people answered yes to how many of the ACE subset
+
+xtabs(~ brfss_ACE$ACEmultiple + )
+
+## The xtabs for ACEmultiple and another ACE dimension will help narrow down how many people from each subset of the ACE have tagged how many of the ACE dimensions
+
+```
+
+
+
+
