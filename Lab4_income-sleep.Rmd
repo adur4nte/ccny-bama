@@ -1,0 +1,87 @@
+---
+title: "Lab4_knn_datamanip"
+author: "Allegra Durante"
+date: "2024-03-07"
+output: html_document
+---
+
+
+This is part 2 of my HW5, picking up where Lab4 left off.
+
+
+```{r}
+load("~/CCNY 2024/2023-2024/PSY V0500 Stats/Statting/BRFSS2022/BRFSS2022_rev.RData")
+library(tidyverse)
+library(ggplot2)
+library(gapminder)
+require(class)
+require(caret)
+```
+
+This shows there are categories INCOME3 for income and SLEPTIM1 for income and sleep time, I'm curious if there's a correlation between the two. I've been watching a few videos on statistics in R, so I'll be using some commands that haven't come up in class before.
+
+## My hypothesis is that people with lower income sleep less than people with higher income.
+
+```{r}
+glimpse(brfss22)
+```
+
+
+
+```{r}
+attach(brfss22)
+summary(SLEPTIM1)
+table(SLEPTIM1)
+summary(INCOME3)
+table(INCOME3)
+```
+
+```{r}
+brfss22$income_max <- fct_recode(brfss22$INCOME3, "10" = "Household income less than $10,000",
+                                "15" = "Less than $15,000 ($10,000 to less than $15,000)", 
+                                "20" = "Less than $20,000 ($15,000 to less than $20,000) ",
+                                "25" = "Less than $25,000 ($20,000 to less than $25,000) ",
+                                "35" = "Less than $35,000 ($25,000 to less than $35,000) ",
+                                "50" = "Less than $50,000 ($35,000 to less than $50,000) ", 
+                                "75" = "Less than $75,000 ($50,000 to less than $75,000)",
+                                "100" = "Less than $100,000 ($75,000 to less than $100,000)",
+                                "150" = "Less than $150,000 ($100,000 to less than $150,000)",
+                                "200" = "Less than $200,000 ($150,000 to less than $200,000)",
+                                "201" = "$200,000 or more",
+                                NULL = "Dont know/Not sure", NULL = "Refused", NULL = "NA's")
+```
+
+```{r}
+summary(X_AGEG5YR)
+summary(brfss22$income_max)
+```
+Visualizing:
+```{r}
+attach(brfss22)
+hist(income_max)
+```
+Trying again, since I need to change income_max to numeric:
+```{r}
+glimpse(brfss22)
+as.numeric(income_max)
+```
+That didn't do it, so let's keep trying
+```{r}
+income_num <- (as.numeric(income_max))
+glimpse(brfss22)
+```
+So now income_num is a value set of numbers but it's not part of brfss22 any more. I think that's ok. Trying those visualizations again:
+```{r}
+hist(income_num)
+hist(SLEPTIM1)
+```
+Keeping going
+```{r}
+  ggplot(aes(x=income_num, y=SLEPTIM1))+
+  geom_point()
+```
+
+# I ran out of time to work on this at this point because I have to catch a plane tonight, but I think I'm starting to understand how to work with data in R and try things.
+
+
+
